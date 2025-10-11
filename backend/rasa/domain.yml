@@ -1,0 +1,23 @@
+version: "3.1"
+
+intents:
+  - consultar_lista_pokemon
+  - consultar_pokemon_especifico
+
+entities:
+  - pokemon_name
+
+slots:
+  pokemon_name:
+    type: text
+    mappings:
+    - type: from_entity
+      entity: pokemon_name
+
+actions:
+  - action_get_all_pokemon
+  - action_get_pokemon_detail
+
+responses:
+  utter_pedir_pokemon:
+    - text: "¿De qué Pokémon te gustaría conocer los detalles?"

@@ -1,0 +1,9 @@
+{
+  "lookup": {
+    "eJyLrq6NBQAEOAGx": "action_listen",
+    "eJwtysEJgDAMQNFVMoATdBWRUkKEYE1Kk3op3d2A3v6Ht8+1wWydnlzQWSXB/CJLuSnBP5XNScIOox6GJdYToIqN6qXnphfdIckaIZ+MutbxAtV2JRo=": "action_get_pokemon_detail",
+    "eJyVjVEKgCAQRK/iATqBV4kQsSmWdBVd+xHvnlD0XX/z4M3M3PqkWso4jXVCkbVqdzBsA7R6wFMR8HBrQR4O8UDRykUu1YvNJsUDYZgoCY42crF/m94hb3mFWPJ/b5YLyXJNXg==": "action_listen",
+    "eJyLrq7VUaguKEoti09MLsnMz7NSqIYw4vMSc1OtFKCcnMziktQ8oNrS4tQioJrMPCC3xEohOT+vuDSnJLEIrCIxviA/OzU3P6+2NhYAIL0jHQ==": "action_get_all_pokemon",
+    "eJyNjEEKwCAMBL+SB/QFfqUUCRKKNCaisRfx75W29NzbDszO2scCPRc6PQaLKg76M7xgIgcvcKxGMt1WqUwnykRzEFRqY8NyG+izHpRUxr/qTuaR+Xv9z28X9f1IKg==": "action_listen"
+  }
+}
