@@ -1,0 +1,20 @@
+[
+  {
+    "tag_name": "entity",
+    "ids_to_tags": {
+      "1": "B-pokemon_name",
+      "2": "I-pokemon_name",
+      "3": "L-pokemon_name",
+      "4": "U-pokemon_name",
+      "0": "O"
+    },
+    "tags_to_ids": {
+      "B-pokemon_name": 1,
+      "I-pokemon_name": 2,
+      "L-pokemon_name": 3,
+      "U-pokemon_name": 4,
+      "O": 0
+    },
+    "num_tags": 5
+  }
+]
