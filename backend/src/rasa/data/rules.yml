@@ -1,0 +1,14 @@
+- rule: Activar lista de Pokémon
+  steps:
+    - intent: consultar_lista_pokemon
+    - action: action_get_all_pokemon
+
+- rule: Activar detalles de un Pokémon
+  steps:
+    - intent: consultar_pokemon_especifico
+    - action: action_get_pokemon_detail
+
+- rule: Pedir Pokémon si no se menciona
+  steps:
+    - intent: consultar_pokemon_especifico
+    - action: utter_pedir_pokemon
