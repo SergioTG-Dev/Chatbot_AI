@@ -214,3 +214,12 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# CONFIGURACIÓN ESENCIAL DE RASA (Ignorar lo que se genera)
+# ------------------------------------------------------------------
+
+# Archivos de Metadatos y Cache de Rasa
+.rasa/
+
+# Modelos Entrenados (.tar.gz)
+models/*

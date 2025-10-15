@@ -1,0 +1,111 @@
+version: "3.1"
+stories:
+- story: Saludo al inicio de la conversación
+  steps:
+    - intent: greet
+    - action: utter_greet
+
+- story: Despedida al final de la conversación
+  steps:
+    - intent: goodbye
+    - action: utter_goodbye
+
+- story: Bot Challenge
+  steps:
+    - intent: bot_challenge
+    - action: utter_iamabot
+
+- story: Iniciar y completar reserva de cita (Happy Path)
+  steps:
+    - intent: consult_appointment
+    - action: appointment_form
+    - active_loop: appointment_form
+    - active_loop: null 
+    - action: action_submit_appointment_form
+    - slot_was_set:
+      - action_result: success 
+    - action: utter_did_that_help
+
+- story: Cancelación de cita con confirmación (Path exitoso)
+  steps:
+    - intent: cancel_appointment
+    - action: utter_confirm_cancellation
+    - intent: affirm
+    - action: action_cancel_appointment
+    - action: utter_goodbye
+
+- story: Cancelación de cita negada (Path de arrepentimiento)
+  steps:
+    - intent: cancel_appointment 
+    - action: utter_confirm_cancellation 
+    - intent: deny
+    - action: utter_happy
+
+- story: Iniciar reagendamiento de cita
+  steps:
+    - intent: reschedule_appointment
+    - action: action_ask_new_reschedule_date
+    - action: action_listen
+
+- story: El usuario afirma que la FAQ ayudó
+  steps:
+    - action: utter_did_that_help
+    - intent: affirm
+    - action: utter_happy
+
+- story: El usuario niega que la FAQ ayudó
+  steps:
+    - action: utter_did_that_help
+    - intent: deny
+    - action: utter_ask_rephrase
+
+- story: Negación de Slot en Formulario y Continuación
+  steps:
+    - action: utter_ask_date
+    - intent: deny
+    - action: utter_ask_continue_form
+    - intent: affirm
+    - action: appointment_form
+
+- story: Negación de Slot en Formulario y Abandono
+  steps:
+    - action: utter_ask_service_type
+    - intent: deny
+    - action: utter_ask_continue_form
+    - intent: deny
+    - action: action_deactivate_loop
+    - active_loop: null
+    - action: utter_goodbye
+
+- story: Falla de la Acción de Envío del Formulario
+  steps:
+    - intent: consult_appointment
+    - action: appointment_form
+    - active_loop: appointment_form
+    - active_loop: null
+    - action: action_submit_appointment_form
+    - slot_was_set:
+      - action_result: failure
+    - action: utter_appointment_creation_failed
+    - action: utter_did_that_help
+  
+- story: Reagendamiento exitoso (Con fecha y ID)
+  steps:
+    - intent: reschedule_appointment
+    - action: action_ask_new_reschedule_date
+    - intent: inform
+    - action: action_reschedule_appointment
+    - slot_was_set:
+      - action_result: success
+    - action: utter_did_that_help
+
+- story: Falla en la Acción de Reagendamiento
+  steps:
+    - intent: reschedule_appointment
+    - action: action_ask_new_reschedule_date
+    - intent: inform
+    - action: action_reschedule_appointment
+    - slot_was_set:
+      - action_result: failure
+    - action: utter_reschedule_failed
+    - action: utter_did_that_help

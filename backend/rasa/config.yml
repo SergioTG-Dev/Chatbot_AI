@@ -1,0 +1,42 @@
+# 1. Configuración de Lenguaje y Versión
+version: "3.1"
+language: es # Define el idioma para el procesamiento (español)
+
+# 2. Pipeline de NLU
+# Flujo de componentes que transforman el texto del usuario en 'intents' y 'entities'.
+pipeline:
+  # Tokenizador: Divide el texto en palabras.
+- name: "WhitespaceTokenizer"
+  # Featurizers: Convierte palabras en características numéricas útiles.
+- name: "RegexFeaturizer"
+- name: "CountVectorsFeaturizer"
+  analyzer: "char_wb"
+  min_ngram: 1
+  max_ngram: 4 
+- name: LexicalSyntacticFeaturizer
+  # Clasificador principal: Reconoce la intención (intent) y las entidades (DIETClassifier).
+- name: DIETClassifier
+  epochs: 100
+  constrain_similarities: true
+  # Mapper: Corrige sinónimos y mapea entidades a slots.
+- name: EntitySynonymMapper
+  # Selector para respuestas de FAQ.
+- name: ResponseSelector
+  epochs: 100
+  constrain_similarities: true
+
+# 3. Core Policies
+# Define la lógica para decidir la siguiente acción del bot.
+policies:
+  # Recuerda el flujo exacto de conversaciones previas (hasta 5 turnos por defecto).
+- name: MemoizationPolicy
+  # Implementa las reglas fijas.
+- name: RulePolicy
+  core_fallback_threshold: 0.3
+  core_fallback_action_name: "action_default_fallback"
+  enable_fallback_prediction: true
+  # Modelo principal de Core que aprende de las stories.
+- name: TEDPolicy
+  epochs: 100
+  constrain_similarities: true
+assistant_id: 20251014-032039-feldspar-scenario
