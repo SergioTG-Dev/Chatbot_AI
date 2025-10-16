@@ -1,0 +1,403 @@
+version: "3.1"
+
+nlu:
+- intent: consultar_lista_pokemon
+  examples: |
+    - muéstrame todos los pokémon
+    - lista de pokémon
+    - quiénes son todos los pokémon
+    - quiero ver los pokémon disponibles
+
+- intent: consultar_pokemon_especifico
+  examples: |
+    - información de [pikachu](pokemon_name)
+    - detalles de [charizard](pokemon_name)
+    - dame datos de [bulbasaur](pokemon_name)
+    - cómo es [squirtle](pokemon_name)
+
+- intent: greet
+  examples: |
+    - hola
+    - buenos días
+    - qué tal
+    - cómo estás
+    - hey
+    - buenas tardes
+    - buenas noches
+
+- intent: goodbye
+  examples: |
+    - adiós
+    - hasta luego
+    - nos vemos
+    - chao
+    - gracias, adiós
+    - muchas gracias, adiós
+    - eso es todo
+    - que tengas un buen día
+
+- intent: deny
+  examples: |
+    - no
+    - no, gracias
+    - nunca
+    - para nada
+
+- intent: affirm
+  examples: |
+    - si
+    - por supuesto
+    - me encantaría
+    - estoy de acuerdo
+    - correcto
+
+- intent: mood_great
+  examples: |
+    - estoy genial
+    - bien
+    - increible
+    - excelente
+    - perfecto
+
+- intent: mood_unhappy
+  examples: |
+    - no estoy bien
+    - me siento triste
+    - mal
+    - horrible
+    - molesto
+    - terrible
+
+- intent: bot_challenge
+  examples: |
+    - ¿eres un bot?
+    - ¿eres un humano?
+    - ¿quién te creó?
+    - ¿eres un asistente?
+    - ¿quién eres?  
+
+- intent: stop
+  examples: |
+   - para
+   - detente
+   - espera
+   - un momento
+
+- intent: help
+  examples: |
+    - necesito ayuda
+    - no entiendo
+    - ¿cómo funcionas?
+    - ¿qué te puedo preguntar?
+
+- intent: request_contact_info
+  examples: |
+    - dame el número de teléfono
+    - ¿a qué correo me puedo comunicar?
+    - ¿a dónde tendría que llamar?
+    - información de contacto
+    - ¿a qué departamento debo contactar?
+    - ¿dónde puedo escribirles?
+    - ¿cuál es la dirección?
+    - ¿a dónde me puedo dirigir?
+
+- intent: request_hours
+  examples: |
+    - ¿cuál es su horario?
+    - horario de atención
+    - ¿a qué horas abren?
+    - ¿a qué horas cierran?
+
+- intent: consult_appointment
+  examples: |
+    - quiero reservar una cita para el [próximo martes](date).
+    - necesito agendar un turno para [renovar mi Licencia](service_type).
+    - me gustaría pedir una cita para [la próxima semana](date) a las [cuatro de la tarde](time).
+    - ¿cómo saco un ticket para [trámites de documentos](process_category)?
+    - ¿tienen disponibilidad para el [viernes](date)?
+    - quiero consultar una hora para el [pasaporte]](service_type).
+
+- intent: cancel_appointment
+  examples: |
+    - quiero cancelar mi cita del [próximo martes](date).
+    - necesito anular la reserva con el ID [ABC1234](appointment_id).
+    - por favor, elimina mi turno del [lunes](date).
+    - ya no podré ir, cancela mi cita de [vacunación](service_type).
+    - deseo dar de baja mi turno de [adultos mayores](process_category).
+
+- intent: reschedule_appointment
+  examples: |
+    - quiero cambiar mi cita para el [jueves](date).
+    - necesito reagendar el turno que tengo para [la próxima semana](date) a las [9 am](time).
+    - ¿puedo mover mi cita para la renovación de mi [pasaporte](process_category) a otro día?
+    - modifica mi reserva con ID [XYZ987](appointment_id) para el [próximo viernes](date).
+    - dame otro horario para la cita de [matrimonio civil](service_type).
+
+- intent: check_appointment_status
+  examples: |
+    - tengo alguna cita programada para el [próximo mes](date)?
+    - ¿cuál es la fecha de mi reserva de [licencia](service_type)?
+    - ¿a qué hora es mi turno con ID [567JHG](appointment_id)?
+    - recuérdame cuándo tengo la cita.
+    - verifica mi reserva, por favor, en [trámites](process_category).
+
+- intent: ask_faq
+  examples: |
+    - tengo una duda sobre [licencias de conducir](process_category)
+    - necesito información sobre [impuestos y agip](process_category)
+    - cómo saco un turno en [salud](process_category)?
+    - quiero pagar mis [infracciones de tránsito](process_category)
+    - qué debo saber de [registro civil y dni](process_category)
+    - cómo funciona el servicio de [transporte](process_category) público?
+    - quiero consultar por [mascotas](process_category)
+    - qué debo hacer para un proceso [funerario](process_category), dónde consulto?
+    - qué son los centros de [adultos mayores](process_category), tienen descuentos?
+    - tengo una pregunta general sobre trámites
+    - me puedes decir algo del gobierno de la ciudad?
+    - no conozco Buenos Aires, podrías hablarme de la ciudad
+
+- intent: nlu_fallback
+  examples: |
+    - ¿qué comiste anoche?
+    - me gusta el color azul pero no el amarillo
+    - si el cielo es rojo, ¿cuántos peces hay?
+    - no sé qué decir ahora
+    - quiero un turno para comprar un coche
+    - ¿me puedes decir la capital de Francia?
+    - mi perro se llama Firulais
+    - ¿qué opinas de la política local?
+    - necesito sacar una cita con el dentista
+    - cuánto cuesta un boleto de avión
+    - ghjksd fvbnmlñ
+    - cuanto es 2 + 2
+    - hola necesito un turno para mi vuelo
+    - quiero hablar con un humano ahora mismo
+
+- intent: inform
+  examples: |
+    - Quiero confirmar [mañana](date) a las [9:00 am](time)
+    - El [próximo viernes](date)
+    - Quiero la [cita de pasaporte](service_type)
+    - Mi número de ID es [456ABC](appointment_id)
+    - El turno era para [Salud](process_category)
+    - La tengo [a las 15:30](time)
+    - Para la [mañana](time)    
+    - Sí, esa es mi [cita](service_type)
+    - Creo que [es un trámite](process_category)
+    - Sobre [licencia de conducir](service_type)
+    - No, no es el [martes](date), es el [miércoles](date)
+    - La hora es [las 10](time), no [las 11](time)
+    - La quiero para [hoy](date), no para [mañana](date) 
+
+entity_synonyms:
+
+  "Registro Civil y DNI":
+    - registro civil
+    - dni
+    - cedula
+    - partida nacimiento
+    - recien nacido
+    - pasaporte
+    - viaje
+    - perdi dni
+    - denuncia
+    - mudanza
+    - cambio domicilio
+    - primera vez
+    
+  "Salud":
+    - turnos medicos
+    - centro salud
+    - atención primaria
+    - certificado discapacidad
+    - medico
+    - pension discapacidad
+    - vacunación
+    
+  "Vivienda":
+    - alquiler
+    - casa
+    - credito vivienda
+    - subsidio habitacional
+    - ivc
+    - registro propiedad
+    
+  "Licencias de Conducir":
+    - licencia
+    - conducir
+    - puntos licencia
+    - duplicado licencia
+    
+  "Infracciones de Tránsito":
+    - multas
+    - transito
+    - infracciones
+    - fotomultas
+    - apelar
+    - cambio de titular
+
+  "Impuestos y AGIP":
+    - agip
+    - abl
+    - jubilados
+    - pension 
+    - impuestos
+    - ingresos
+    - patente auto
+    - actividad económica
+    - pago de deuda
+    - clave ciudad 
+    
+  "Habilitaciones Comerciales":
+    - habilitacion
+    - comercio
+    - gastronomía
+    - rubros permitidos
+    - código urbanistico
+    - abrir negocio
+    - permisos
+    - negocio
+    - bar
+    
+  "Educación":
+    - inscripción
+    - escuela pública
+    - pase escolar
+    - boleto estudiantil
+    - transporte gratis
+    - becas
+    - universidad
+    - primaria
+    - segundaria
+    
+  "Desarrollo social":
+    - ciudadanía
+    - tarjeta alimentos
+    - ticket social
+    - subsidio
+    - asistencia social
+    - violencia genero
+    - ayuda
+
+  "Matrimonio y Unión civil":
+    - casarse
+    - union civil
+    - boda
+    - pareja
+    
+  "Transporte":
+    - sube
+    - tarjeta
+    - saldo
+    - estacionamiento
+    - zona azul
+    - horarios estacionamiento
+    - métodos de pago
+    
+  "Taxis y Remises":
+    - licencia taxi
+    - registro taxi
+    - problema remis
+    - queja taxi
+    - denunciar taxi
+
+  "Cultura":
+    - bibliotecas públicas
+    - libros
+    - carnet biblioteca
+    - proteatro
+    - entradas teatro
+    - teatro
+    - descuentos
+    - entretenimiento
+    - obras
+    - espectáculos
+    - ballet
+    - conciertos
+    - museos
+
+  "Turismo":
+    - airbnb
+    - alquileres temporarios
+    - hospedaje
+    - actividades
+    - bus turístico
+    - ecobici
+    - seguridad turistica
+    - cambio de divisas
+    - dónde dormir
+    - visitas acsequibles
+    
+  "Defensa al consumidor":
+    - denuncia consumidor
+    - garantía
+    - reclamos
+
+  "Espacios públicos":
+    - vía pública
+    - veredas
+    - semaforos
+    - árbol
+    - basura
+    - reparación
+
+  "Medio ambiente":
+    - separación residuos
+    - reciclaje
+    - contaminación
+    - denuncia ambiental
+    - ruido
+    
+  "Obras y Construcción":
+    - permiso de obra
+    - reforma
+    - planos
+    - permiso reforma
+    - pago derechos de obra
+
+  "Cementerios":
+    - cremación
+    - funeral
+    - bóveda
+    - titular de sepultura
+    
+  "Empleo":
+    - trabajo
+    - CV
+    - ofertas laborales
+    - capacitación
+    - pasantías
+    - prácticas
+
+  "Ferias y Mercados":
+    - Puestos feria
+    - vender feria
+    - artesanías
+    
+  "Mascotas":
+    - perro
+    - gato
+    - veterinaria
+    - adopción
+    - registro
+
+  "Información Pública":
+    - Ley 104
+    - transparencia
+    
+  "Eventos":
+    - fiesta
+    - espectaculos
+
+  "Adultos Mayores":
+    - jubilados
+    - beneficios
+    - centros de día
+    - pensionados 
+    
+  "Estacionamiento reservado":
+    - discapacitados
+
+  "Autorizaciones Especiales":
+    - permiso viaje
+    - viajar con menores
