@@ -216,4 +216,8 @@ __marimo__/
 .streamlit/secrets.toml
 
 # Rasa
+# Rasa cache
 .rasa/
+.rasa/cache/
+.rasa/models/
+.rasa/events.db
