@@ -6,9 +6,17 @@ authors = [
     {name = "jonanfu", email = "jonanfu@gmail.com"}
 ]
 readme = "README.md"
-requires-python = ">=3.8,<3.9"
+requires-python = ">=3.10,<3.11"
 
 dependencies = [
+    "rasa (>=3.6.21,<4.0.0)",
+    "rasa-sdk (>=3.6.2,<3.7.0)",
+    "python-dotenv (>=1.1.1,<2.0.0)"
+]
+
+[tool.poetry]
+packages = [
+    { include = "rasa-chat", from = "src" },
 ]
 
 [build-system]
