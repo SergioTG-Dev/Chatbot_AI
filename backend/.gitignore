@@ -215,9 +215,20 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 
+<<<<<<< HEAD:backend/.gitignore
 # Rasa
 # Rasa cache
 .rasa/
 .rasa/cache/
 .rasa/models/
 .rasa/events.db
+=======
+# CONFIGURACIÓN ESENCIAL DE RASA (Ignorar lo que se genera)
+# ------------------------------------------------------------------
+
+# Archivos de Metadatos y Cache de Rasa
+.rasa/
+
+# Modelos Entrenados (.tar.gz)
+models/*
+>>>>>>> origin/feature/hu-1.2-motor-faq:backend/rasa/.gitignore
