@@ -1,13 +1,32 @@
-import { cn } from '@/lib/utils'
-import type { ChatMessage } from '@/hooks/use-realtime-chat'
 
-interface ChatMessageItemProps {
-  message: ChatMessage
-  isOwnMessage: boolean
-  showHeader: boolean
+import { cn } from '@/lib/utils'
+import type { ChatMessage } from '@/hooks/use-rasa-chat'
+import QuickReplyButtons from './quickreplybutton' 
+
+export interface RasaButton {
+  title: string
+  payload: string
 }
 
-export const ChatMessageItem = ({ message, isOwnMessage, showHeader }: ChatMessageItemProps) => {
+interface ChatMessageItemProps {
+  message: ChatMessage & { buttons?: RasaButton[] }
+  isOwnMessage: boolean
+  showHeader: boolean
+  
+
+  onQuickReplyClick: (payload: string) => void
+
+}
+
+export const ChatMessageItem = ({ 
+  message, 
+  isOwnMessage, 
+  showHeader,
+  onQuickReplyClick,
+}: ChatMessageItemProps) => {
+  
+  const isBotMessage = !isOwnMessage 
+  
   return (
     <div className={`flex mt-2 ${isOwnMessage ? 'justify-end' : 'justify-start'}`}>
       <div
@@ -31,6 +50,7 @@ export const ChatMessageItem = ({ message, isOwnMessage, showHeader }: ChatMessa
             </span>
           </div>
         )}
+        
         <div
           className={cn(
             'py-2 px-3 rounded-xl text-sm w-fit',
@@ -39,6 +59,13 @@ export const ChatMessageItem = ({ message, isOwnMessage, showHeader }: ChatMessa
         >
           {message.content}
         </div>
+        
+        {message.buttons && message.buttons.length > 0 && isBotMessage && (
+            <QuickReplyButtons 
+                buttons={message.buttons} 
+                onButtonClick={onQuickReplyClick} 
+            />
+        )}
       </div>
     </div>
   )
