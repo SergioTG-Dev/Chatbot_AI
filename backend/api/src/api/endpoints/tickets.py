@@ -16,7 +16,7 @@ def get_citizen_by_dni(dni: str):
 @router.post("/", response_model=Ticket, status_code=status.HTTP_201_CREATED)
 def create_ticket(ticket: TicketCreate):
     citizen = get_citizen_by_dni(ticket.citizen_dni)
-    print(citizen)
+    
     ticket_data = ticket.model_dump(mode="json", exclude={"citizen_dni"})
     ticket_data["citizen_id"] = str(citizen["id"])
     
