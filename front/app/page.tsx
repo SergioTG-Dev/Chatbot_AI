@@ -1,37 +1,55 @@
-import { DeployButton } from "@/components/deploy-button";
 import { EnvVarWarning } from "@/components/env-var-warning";
 import { AuthButton } from "@/components/auth-button";
-import { Hero } from "@/components/hero";
 import { ThemeSwitcher } from "@/components/theme-switcher";
-import { ConnectSupabaseSteps } from "@/components/tutorial/connect-supabase-steps";
-import { SignUpUserSteps } from "@/components/tutorial/sign-up-user-steps";
 import { hasEnvVars } from "@/lib/utils";
-import Link from "next/link";
+import Image from "next/image";
+import Search from "@/components/ui/search";
+import Floating_button from "@/components/ui/floating_button";
+
+const monserrat = { className: 'font-extrabold' }; 
 
 export default function Home() {
   return (
     <main className="min-h-screen flex flex-col items-center">
-      <div className="flex-1 w-full flex flex-col gap-20 items-center">
-        <nav className="w-full flex justify-center border-b border-b-foreground/10 h-16">
-          <div className="w-full max-w-5xl flex justify-between items-center p-3 px-5 text-sm">
+        <nav className="w-full flex justify-center border-b border-b-foreground/10 h-24">
+          <div className="w-full max-w-full flex justify-between items-center px-5 text-sm">
             <div className="flex gap-5 items-center font-semibold">
-              <Link href={"/"}>Next.js Supabase Starter</Link>
-              <div className="flex items-center gap-2">
-                <DeployButton />
-              </div>
+              <Image
+              src='/Logo.svg'
+              alt='Logo Buenos Aires'
+              width={80}
+              height={80}
+              className='hidden md:block'
+              />
+              <h1>Buenos Aires</h1>
             </div>
             {!hasEnvVars ? <EnvVarWarning /> : <AuthButton />}
           </div>
         </nav>
-        <div className="flex-1 flex flex-col gap-20 max-w-5xl p-5">
-          <Hero />
-          <main className="flex-1 flex flex-col gap-6 px-4">
-            <h2 className="font-medium text-xl mb-4">Next steps</h2>
-            {hasEnvVars ? <SignUpUserSteps /> : <ConnectSupabaseSteps />}
-          </main>
-        </div>
+          <div className="relative flex-1 w-full flex items-center justify-center">
+          
+          <Image
+            src='/BuenosAires.svg'
+            alt='Foto Ciudad Buenos Aires'
+            fill={true}
+            className='hidden md:block absolute inset-0 object-cover' 
+          />
+          <div className="relative z-10 text-white text-center w-full max-w-2xl px-4">
+        <h1 className="text-6xl font-extrabold mb-4 md:text-8xl md:mb-6">
+            Buenos Aires
+        </h1>
+        
+        <p className="text-xl mb-8 md:text-2xl md:mb-10">
+            ¡a un clic y al toque!
+        </p>
 
-        <footer className="w-full flex items-center justify-center border-t mx-auto text-center text-xs gap-8 py-16">
+        <div className="flex justify-center">
+            <Search placeholder="Buscar Trámites y Servicios..." />
+        </div>
+    </div>
+          </div>
+
+        <footer className="w-full flex justify-between items-center text-center text-xs border-t mx-auto px-5 py-8">
           <p>
             Powered by{" "}
             <a
@@ -45,7 +63,7 @@ export default function Home() {
           </p>
           <ThemeSwitcher />
         </footer>
-      </div>
+        <Floating_button />
     </main>
   );
 }

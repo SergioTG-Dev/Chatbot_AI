@@ -1,0 +1,178 @@
+version: "3.1"
+
+intents:
+  - consultar_lista_pokemon
+  - consultar_pokemon_especifico
+
+entities:
+  - pokemon_name
+
+slots:
+  pokemon_name:
+    type: text
+    mappings:
+    - type: from_entity
+      entity: pokemon_name
+
+actions:
+  - action_get_all_pokemon
+  - action_get_pokemon_detail
+
+responses:
+  utter_pedir_pokemon:
+    - text: "¿De qué Pokémon te gustaría conocer los detalles?"
+
+
+intents:
+  - greet
+  - goodbye
+  - affirm
+  - deny
+  - mood_great
+  - mood_unhappy
+  - bot_challenge
+  - consult_appointment
+  - cancel_appointment
+  - reschedule_appointment
+  - check_appointment_status
+  - help
+  - stop
+  - request_contact_info
+  - request_hours
+  - ask_faq
+  - nlu_fallback
+  - inform
+
+entities:
+  - date
+  - time
+  - appointment_id
+  - process_category
+  - service_type
+  - inquiry_topic
+
+slots:
+  date:
+    type: text
+    influence_conversation: true
+    mappings:
+      - type: from_entity
+        entity: date
+
+  time:
+    type: text
+    influence_conversation: true
+    mappings:
+      - type: from_entity
+        entity: time
+
+  appointment_id:
+    type: text
+    influence_conversation: true
+    mappings:
+      - type: from_entity
+        entity: appointment_id
+        
+  process_category:
+    type: text
+    influence_conversation: true
+    mappings:
+      - type: from_entity
+        entity: process_category
+
+  service_type:
+    type: text
+    influence_conversation: true
+    mappings:
+      - type: from_entity
+        entity: service_type
+
+  inquiry_topic:
+    type: text
+    influence_conversation: false
+    mappings:
+      - type: from_entity
+        entity: inquiry_topic
+
+  action_result:
+    type: text
+    influence_conversation: true
+    mappings:
+      - type: custom
+              
+forms:
+  appointment_form:
+    required_slots:
+      - service_type 
+      - date
+      - time
+
+responses:
+  utter_greet:
+  - text: "¡Hola! Soy el Asistente Municipal. ¿En qué puedo ayudarte hoy?"
+  
+  utter_goodbye:
+  - text: "¡Adiós! Que tengas un buen día."
+  
+  utter_happy:
+  - text: "¡Genial!"
+  
+  utter_cheer_up:
+  - text: "Aquí tienes algo para alegrarte."
+  
+  utter_iamabot:
+  - text: "Soy un asistente de IA impulsado por Rasa."
+  
+  utter_faq_not_found:
+    - text: "Lo siento, no tengo una respuesta exacta para esa pregunta."
+
+  utter_did_that_help:
+  - text: "¿Te ayudó esta información? ¿Necitas algo más?"
+
+  utter_ask_rephrase:
+  - text: "¿Podrías darme más información?"
+
+  utter_ask_service_type:
+    - text: "¿Qué tipo de trámite o servicio quieres reservar (ej. Renovación de Licencia, Certificado Médico)?"
+
+  utter_ask_date:
+    - text: "¿Para qué fecha te gustaría agendar?"
+
+  utter_ask_time:
+    - text: "¿Y a qué hora sería tu cita?"
+
+  utter_submit_appointment_form:
+    - text: "Perfecto. He recolectado los datos. Tu cita de {service_type} para el {date} a las {time} está lista para ser agendada."
+
+  utter_unclear:
+    - text: "Disculpa, no entendí bien. ¿Podrías reformular tu pregunta o pedir 'ayuda'?"
+  
+  utter_help:
+    - text: "Soy tu asistente virtual, dispuesto a ayudarte en consultas, tramites o información que necesites de tu municipio"
+
+  utter_contact_info:
+    - text: "Puedes comunicarte al numero x, tienen su correo y, las ubicaciones son , horario de atencion v"
+
+  utter_hours:
+    - text: "Los horarios para x son de y"
+  
+  utter_ask_continue_form:
+    - text: "Entendido, no pasa nada. ¿Quieres intentar darnos la información ahora o prefieres cancelar la reserva?"
+
+  utter_appointment_creation_failed:
+    - text: "Lo siento, hubo un problema al intentar crear tu cita. Por favor, inténtalo más tarde o comunícate con soporte."
+
+  utter_confirm_cancellation:
+    - text: "¿Estás seguro de que deseas cancelar tu cita de {service_type} del {date}?"
+  
+  utter_reschedule_failed:
+    - text: "No pudimos modificar tu reserva. Por favor, verifica el ID de la cita o inténtalo más tarde."
+
+actions:
+  - action_default_fallback
+  - action_check_appointment
+  - action_search_faq
+  - action_submit_appointment_form
+  - action_cancel_appointment
+  - action_ask_new_reschedule_date
+  - action_reschedule_appointment 
