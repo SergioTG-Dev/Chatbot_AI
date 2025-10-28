@@ -1,6 +1,0 @@
-{
-  "dependencies": {
-    "@heroicons/react": "^2.2.0",
-    "use-debounce": "^10.0.6"
-  }
-}
