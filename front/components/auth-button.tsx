@@ -34,8 +34,9 @@ export async function AuthButton() {
   if (official?.role === "admin") {
     return (
       <div className="flex items-center gap-4">
+        👑 Bienvenido administrador {official.full_name || user.email}
         <Button asChild size="sm" variant="secondary">
-          <Link href="/admin">Ir al panel</Link>
+          <Link href="/admin/dashboard">Ir al panel</Link>
         </Button>
         <LogoutButton />
       </div>
@@ -45,6 +46,7 @@ export async function AuthButton() {
   if (official?.role === "funcionario") {
     return (
       <div className="flex items-center gap-4">
+        👋 Hola {official.full_name || user.email}, bienvenido al portal de funcionarios
         <Button asChild size="sm" variant="secondary">
           <Link href="/funcionario/inicio">Ir a mi panel</Link>
         </Button>
