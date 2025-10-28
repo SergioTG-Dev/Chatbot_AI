@@ -1,5 +1,4 @@
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { AuthButton } from '@/components/auth-button';
 import { BarChartComponent } from '@/components/ui/barchart'; 
 
 export default function AdminDashboardPage() {
@@ -14,15 +13,7 @@ export default function AdminDashboardPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-black text-foreground">
-      
-      <nav className="w-full bg-background border-b shadow-md p-4 flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-blue-700">Dashboard de IA - Buenos Aires</h1>
-
-        <AuthButton /> 
-      </nav>
-
-      <main className="p-8">
+    <>
         <h2 className="text-3xl font-semibold mb-6">Métricas de Rendimiento del Chatbot</h2>
 
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-8">
@@ -93,8 +84,6 @@ export default function AdminDashboardPage() {
           </Card>
           
         </div>
-
-      </main>
-    </div>
+    </>
   );
 }

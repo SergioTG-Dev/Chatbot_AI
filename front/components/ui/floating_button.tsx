@@ -62,7 +62,7 @@ export default function Floating_button() {
           <Button 
             variant="default" 
             className="bg-green-500 hover:bg-green-600 text-white" 
-            onClick={() => window.open('https://wa.me/', '_blank')}
+            onClick={() => window.open('https://wa.me/+14155238886?text=%C2%A1Hola!%20Estuve%20revisando%20el%20sitio%20web%20y%20tengo%20una%20consulta.', '_blank')}
           >
             Contactar por WhatsApp <ArrowRightIcon className="ml-2 w-4 h-4" /> 
           </Button>
