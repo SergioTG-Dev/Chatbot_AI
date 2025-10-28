@@ -20,7 +20,8 @@ def create_official(official_data: OfficialCreateWithAuth
         user_response = admin_auth_client.create_user(
             {
                 "email": official_data.email,
-                "passowrd": official_data.password
+                "password": official_data.password,
+                "email_confirm": True
             }
         )
         new_user_id = user_response.user.id

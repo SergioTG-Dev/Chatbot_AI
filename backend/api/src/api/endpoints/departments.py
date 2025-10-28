@@ -1,10 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from typing import List
 from uuid import UUID
-# <-- IMPORTACIONES ABSOLUTAS -->
 from db.supabase_client import supabase
 from schemas.department import Department, DepartmentCreate, DepartmentUpdate
-
+from schemas.procedure import Procedure
 
 router = APIRouter(prefix="/departments", tags=["Departments"])
 
@@ -41,6 +40,17 @@ def read_department(department_id: UUID):
     if not response.data:
         raise HTTPException(status_code=404, detail="Department not found")
     return response.data[0]
+
+@router.get("/{department_id}/procedures", response_model=List[Procedure])
+def get_department_procedures(department_id: UUID):
+    """
+    Obtiene la lista de trámites (procedimientos) que ofrece un departamento específico.
+    """
+    response = supabase.table("procedures").select("*").eq("department_id", department_id).execute()
+    if not response.data:
+        # No es un error 404, simplemente el departamento no tiene procedimientos
+        return []
+    return response.data
 
 @router.put("/{department_id}", response_model=Department)
 def update_department(
