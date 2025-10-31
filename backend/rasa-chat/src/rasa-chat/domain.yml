@@ -1,28 +1,4 @@
 version: "3.1"
-
-intents:
-  - consultar_lista_pokemon
-  - consultar_pokemon_especifico
-
-entities:
-  - pokemon_name
-
-slots:
-  pokemon_name:
-    type: text
-    mappings:
-    - type: from_entity
-      entity: pokemon_name
-
-actions:
-  - action_get_all_pokemon
-  - action_get_pokemon_detail
-
-responses:
-  utter_pedir_pokemon:
-    - text: "¿De qué Pokémon te gustaría conocer los detalles?"
-
-
 intents:
   - greet
   - goodbye
@@ -39,9 +15,19 @@ intents:
   - stop
   - request_contact_info
   - request_hours
-  - ask_faq
+  - ask_faq:
+      use_entities: []
+  - faq_gcba
+  - list_procedures
   - nlu_fallback
   - inform
+  - report_emergency
+  - provide_dni
+  - modify
+  - solicitar_tramite
+  - informar_dni
+  - informar_nombre
+  - informar_email
 
 entities:
   - date
@@ -50,6 +36,13 @@ entities:
   - process_category
   - service_type
   - inquiry_topic
+  - dni
+  - first_name
+  - last_name
+  - email
+  - department_id
+  - procedure_id
+  - appointment_request
 
 slots:
   date:
@@ -94,6 +87,93 @@ slots:
       - type: from_entity
         entity: inquiry_topic
 
+  dni:
+    type: text
+    influence_conversation: true
+    mappings:
+      - type: from_entity
+        entity: dni
+
+  first_name:
+    type: text
+    influence_conversation: true
+    mappings:
+      - type: from_text
+
+  last_name:
+    type: text
+    influence_conversation: true
+    mappings:
+      - type: from_text
+
+  email:
+    type: text
+    influence_conversation: true
+    mappings:
+      - type: from_text
+        conditions:
+          - active_loop: appointment_full_form
+            requested_slot: email
+          - active_loop: appointment_form
+            requested_slot: email
+
+  nombre_completo:
+    type: text
+    influence_conversation: true
+    mappings:
+      - type: from_text
+        conditions:
+          - active_loop: appointment_full_form
+            requested_slot: nombre_completo
+          - active_loop: appointment_form
+            requested_slot: nombre_completo
+
+  user_verified:
+    type: bool
+    influence_conversation: true
+    mappings:
+      - type: custom
+  appointment_request:
+    type: text
+    influence_conversation: true
+    mappings:
+      - type: from_entity
+        entity: appointment_request
+
+  department_id:
+    type: text
+    influence_conversation: true
+    mappings:
+      - type: from_entity
+        entity: department_id
+      - type: from_text
+
+  procedure_id:
+    type: text
+    influence_conversation: true
+    mappings:
+      - type: from_entity
+        entity: procedure_id
+      - type: from_text
+
+  scheduled_at:
+    type: text
+    influence_conversation: true
+    mappings:
+      - type: from_text
+
+  turno_id:
+    type: text
+    influence_conversation: true
+    mappings:
+      - type: custom
+
+  registration_needed:
+    type: text
+    influence_conversation: true
+    mappings:
+      - type: custom
+
   action_result:
     type: text
     influence_conversation: true
@@ -101,15 +181,28 @@ slots:
       - type: custom
               
 forms:
+  appointment_full_form:
+    required_slots:
+      - dni
+      - nombre_completo
+      - email
+      - user_verified
+      - department_id
+      - procedure_id
+      - scheduled_at
   appointment_form:
     required_slots:
-      - service_type 
-      - date
-      - time
+      - dni
+      - nombre_completo
+      - email
+      - user_verified
+      - department_id
+      - procedure_id
+      - scheduled_at
 
 responses:
   utter_greet:
-  - text: "¡Hola! Soy el Asistente Municipal. ¿En qué puedo ayudarte hoy?"
+  - text: "¡Hola! Soy CiviBot, tu asistente de IA del Gobierno de la Ciudad de Buenos Aires. Te ayudo con trámites, turnos y preguntas frecuentes."
   
   utter_goodbye:
   - text: "¡Adiós! Que tengas un buen día."
@@ -129,8 +222,8 @@ responses:
   utter_did_that_help:
   - text: "¿Te ayudó esta información? ¿Necitas algo más?"
 
-  utter_ask_rephrase:
-  - text: "¿Podrías darme más información?"
+  # utter_ask_rephrase:
+  # - text: "¿Podrías darme más información?"
 
   utter_ask_service_type:
     - text: "¿Qué tipo de trámite o servicio quieres reservar (ej. Renovación de Licencia, Certificado Médico)?"
@@ -140,6 +233,33 @@ responses:
 
   utter_ask_time:
     - text: "¿Y a qué hora sería tu cita?"
+
+  utter_ask_dni:
+    - text: "Por favor, indicá tu DNI (solo números)."
+
+  utter_ask_nombre_completo:
+    - text: "No encontré tu DNI. Indicá tu nombre completo para registrarte."
+
+  utter_ask_email:
+    - text: "Por favor, indicá tu correo electrónico."
+
+  utter_ask_department_id:
+    - text: "Elegí el departamento del trámite."
+
+  utter_ask_procedure_id:
+    - text: "Elegí el trámite dentro del departamento seleccionado."
+
+  utter_ask_scheduled_at:
+    - text: "¿Qué fecha y hora querés para el turno? (ej: 2025-11-01 10:30)"
+
+  utter_confirm_found_data:
+    - text: "He encontrado tus datos: DNI {dni}, Nombre {first_name} {last_name}, Correo {email}. ¿Son correctos? (Sí/No)"
+
+  utter_ask_first_name:
+    - text: "Para registrarte, indicá tu nombre."
+
+  utter_ask_last_name:
+    - text: "Gracias. Ahora, tu apellido."
 
   utter_submit_appointment_form:
     - text: "Perfecto. He recolectado los datos. Tu cita de {service_type} para el {date} a las {time} está lista para ser agendada."
@@ -151,7 +271,7 @@ responses:
     - text: "Soy tu asistente virtual, dispuesto a ayudarte en consultas, tramites o información que necesites de tu municipio"
 
   utter_contact_info:
-    - text: "Puedes comunicarte al numero x, tienen su correo y, las ubicaciones son , horario de atencion v"
+    - text: "Puedes comunicarte al número 4323-9400, su correo electrónico es: j.mancino@gcba.gob.ar y el horario de atención es de Lunes a Viernes de 7:30 a 13:30 Hs."
 
   utter_hours:
     - text: "Los horarios para x son de y"
@@ -162,17 +282,62 @@ responses:
   utter_appointment_creation_failed:
     - text: "Lo siento, hubo un problema al intentar crear tu cita. Por favor, inténtalo más tarde o comunícate con soporte."
 
+  utter_offer_alternate:
+    - text: "¿Necesitas realizar algún otro trámite o consulta?"
+
   utter_confirm_cancellation:
     - text: "¿Estás seguro de que deseas cancelar tu cita de {service_type} del {date}?"
   
   utter_reschedule_failed:
     - text: "No pudimos modificar tu reserva. Por favor, verifica el ID de la cita o inténtalo más tarde."
 
+  utter_emergency_contacts:
+    - text: "🚨 Para emergencias inmediatas:\n 🤖• Médicas: 107 • Bomberos: 100 • Policía: 101 • Defensa Civil: 103"
+
+  utter_ask_other_procedures:
+    - text: "¡Perfecto! Tu turno ha sido agendado exitosamente. ¿Necesitas realizar algún otro trámite?"
+      buttons:
+        - title: "Sí, consultar trámites"
+          payload: "/ask_faq"
+        - title: "No, gracias"
+          payload: "/goodbye"
+
+  utter_show_frequent_procedures:
+    - text: "Estos son algunos de los trámites más frecuentes que puedes realizar:\n• DNI (primera vez o renovación)\n• Pasaporte\n• Licencia de conducir\n• Certificados de nacimiento\n• Consultas sobre impuestos (AGIP)\n• Infracciones de tránsito\n\n¿Sobre cuál te gustaría obtener información?"
+
+  utter_goodbye_after_appointment:
+    - text: "¡Perfecto! Tu turno está confirmado. ¡Que tengas un excelente día y nos vemos pronto!"
+
+  # 1. Pregunta de seguimiento que activa el loop
+  utter_ask_another_consultation:
+    - text: "¿Necesitas realizar otra consulta?"
+      buttons:
+        - title: "Sí, consultar trámites"
+          payload: "/ask_faq"
+        - title: "No, finalizar"
+          payload: "/goodbye"
+
+  # 2. Respuesta informativa para "Turno" DENTRO del loop (sin activar el formulario)
+  utter_turno_action_panel:
+    - text: "En el panel de la izquierda Acciones Rápidas puedes seleccionar Solicitar Turno para alguno de los siguientes trámites: DNI / Pasaporte en Registro Civil, Permisos de Construcción en Obras, Licencias de Conducir y Multas, Impuestos y AGIP entre otros."
+
 actions:
   - action_default_fallback
   - action_check_appointment
   - action_search_faq
+  - action_list_procedures
   - action_submit_appointment_form
   - action_cancel_appointment
   - action_ask_new_reschedule_date
-  - action_reschedule_appointment 
+  - action_report_emergency
+  - action_reschedule_appointment
+  - action_despedida
+  - action_start_registration
+  - action_set_session_complete
+  - action_respond_faq
+  - action_verify_citizen
+  - action_create_citizen
+  - action_fetch_departments
+  - action_fetch_procedures
+  - action_book_appointment
+  - action_detect_appointment_request

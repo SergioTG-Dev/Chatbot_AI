@@ -1,6 +1,6 @@
 import uuid
 from faker import Faker
-from db.supabase_client import supabase
+from .db.supabase_client import supabase
 
 # Inicializar Faker en español para datos más realistas
 fake = Faker('es_ES')
@@ -35,11 +35,11 @@ def seed_database():
     # 1. Crear Departamentos (usando upsert para evitar duplicados)
     print("   Creando departamentos...")
     departments_data = [
-        {"name": "Obras Públicas"},
-        {"name": "Registro Civil"},
-        {"name": "Tránsito y Transporte"},
-        {"name": "Rentas"},
-        {"name": "Salud Pública"},
+        {"name": "Obras Públicas", "address": "Av. Corrientes 1234, Buenos Aires Ciudad"},
+        {"name": "Registro Civil", "address": "Uruguay 753, Buenos Aires Ciudad"},
+        {"name": "Tránsito y Transporte", "address": "Av. Roque Sáenz Peña 511, Buenos Aires Ciudad"},
+        {"name": "Rentas", "address": "Carlos Pellegrini 211, Buenos Aires Ciudad"},
+        {"name": "Salud Pública", "address": "Av. 9 de Julio 1925, Buenos Aires Ciudad"},
     ]
     # upsert inserta o actualiza si el 'name' ya existe
     departments_response = supabase.table("departments").upsert(departments_data, on_conflict="name").execute()

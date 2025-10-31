@@ -1,15 +1,6 @@
 version: "3.1"
 
 stories:
-- story: obtener lista de pokémon
-  steps:
-  - intent: consultar_lista_pokemon
-  - action: action_get_all_pokemon
-
-- story: obtener detalles de un pokémon específico
-  steps:
-  - intent: consultar_pokemon_especifico
-  - action: action_get_pokemon_detail
 
 - story: Saludo al inicio de la conversación
   steps:
@@ -26,16 +17,28 @@ stories:
     - intent: bot_challenge
     - action: utter_iamabot
 
-- story: Iniciar y completar reserva de cita (Happy Path)
+
+- story: Usuario dice SI a otros trámites después de turno
   steps:
-    - intent: consult_appointment
-    - action: appointment_form
-    - active_loop: appointment_form
-    - active_loop: null 
-    - action: action_submit_appointment_form
+    - action: utter_ask_other_procedures
+    - intent: affirm
+    - action: utter_show_frequent_procedures
+
+- story: Usuario dice NO a otros trámites después de turno
+  steps:
+    - action: utter_ask_other_procedures
+    - intent: deny
+    - action: utter_goodbye_after_appointment
+
+- story: Usuario pregunta sobre FAQ después de ver trámites frecuentes
+  steps:
+    - action: utter_show_frequent_procedures
+    - intent: ask_faq
     - slot_was_set:
-      - action_result: success 
-    - action: utter_did_that_help
+      - process_category
+    - action: action_search_faq
+    - action: utter_ask_another_consultation
+    - action: action_listen
 
 - story: Cancelación de cita con confirmación (Path exitoso)
   steps:
@@ -63,12 +66,13 @@ stories:
     - action: utter_did_that_help
     - intent: affirm
     - action: utter_happy
+    - action: action_set_session_complete
 
 - story: El usuario niega que la FAQ ayudó
   steps:
     - action: utter_did_that_help
     - intent: deny
-    - action: utter_ask_rephrase
+    # - action: utter_ask_rephrase
 
 - story: Negación de Slot en Formulario y Continuación
   steps:
@@ -88,35 +92,137 @@ stories:
     - active_loop: null
     - action: utter_goodbye
 
-- story: Falla de la Acción de Envío del Formulario
+
+- story: story_no_turnos_disponibles
   steps:
-    - intent: consult_appointment
-    - action: appointment_form
-    - active_loop: appointment_form
-    - active_loop: null
-    - action: action_submit_appointment_form
+    - intent: list_procedures
+    - action: action_list_procedures
     - slot_was_set:
-      - action_result: failure
-    - action: utter_appointment_creation_failed
-    - action: utter_did_that_help
-  
-- story: Reagendamiento exitoso (Con fecha y ID)
+      - action_result: no_procedures
+    - action: utter_offer_alternate
+    - intent: affirm
+    - action: action_list_procedures
+    - action: action_listen
+
+- story: story_no_turnos_disponibles_cierre
   steps:
-    - intent: reschedule_appointment
-    - action: action_ask_new_reschedule_date
-    - intent: inform
-    - action: action_reschedule_appointment
+    - intent: list_procedures
+    - action: action_list_procedures
     - slot_was_set:
-      - action_result: success
+      - action_result: no_procedures
+    - action: utter_offer_alternate
+    - intent: deny
+    - action: action_despedida
+
+# Consulta directa de FAQs en cualquier momento
+- story: Consulta FAQ directa
+  steps:
+    - intent: ask_faq
+    - action: action_search_faq
+    - action: utter_ask_another_consultation
+    - action: action_listen
+
+
+- story: Reportar emergencia y brindar contactos
+  steps:
+    - intent: report_emergency
+    - action: action_report_emergency
     - action: utter_did_that_help
 
-- story: Falla en la Acción de Reagendamiento
+
+# Historia mínima: consulta corta fuera de formulario
+- story: Consulta corta fuera de formulario a FAQ (service_type)
   steps:
-    - intent: reschedule_appointment
-    - action: action_ask_new_reschedule_date
     - intent: inform
-    - action: action_reschedule_appointment
     - slot_was_set:
-      - action_result: failure
-    - action: utter_reschedule_failed
-    - action: utter_did_that_help
+      - service_type: licencia
+    - action: action_search_faq
+    - action: utter_ask_another_consultation
+    - action: action_listen
+
+# Historia genérica: consulta corta fuera de formulario con cualquier service_type
+- story: Consulta corta fuera de formulario a FAQ (service_type genérico)
+  steps:
+    - intent: inform
+    - slot_was_set:
+      - service_type
+    - action: action_search_faq
+    - action: action_listen
+
+# HISTORIAS PARA EL FLUJO RECURRENTE DE CONSULTAS (FAQs)
+- story: Flujo FAQ Recurrente (Inicio y Primera Pregunta)
+  steps:
+    - intent: greet
+    - action: utter_greet
+    - action: action_listen
+
+# Primera pregunta: distintas variantes
+- story: Flujo FAQ Recurrente (Primera FAQ ask_faq)
+  steps:
+    - intent: ask_faq
+    - action: action_search_faq
+    - action: utter_ask_another_consultation
+    - action: action_listen
+
+- story: Flujo FAQ Recurrente (Primera FAQ faq_gcba)
+  steps:
+    - intent: faq_gcba
+    - action: action_search_faq
+    - action: utter_ask_another_consultation
+    - action: action_listen
+
+- story: Flujo FAQ Recurrente (Primera FAQ inform)
+  steps:
+    - intent: inform
+    - action: action_search_faq
+    - action: utter_ask_another_consultation
+    - action: action_listen
+
+# Respuesta afirmativa y nueva consulta: variantes
+- story: Flujo FAQ Recurrente (Respuesta SI -> ask_faq)
+  steps:
+    - intent: affirm
+    - action: action_listen
+    - intent: ask_faq
+    - action: action_search_faq
+    - action: utter_ask_another_consultation
+    - action: action_listen
+
+- story: Flujo FAQ Recurrente (Respuesta SI -> faq_gcba)
+  steps:
+    - intent: affirm
+    - action: action_listen
+    - intent: faq_gcba
+    - action: action_search_faq
+    - action: utter_ask_another_consultation
+    - action: action_listen
+
+- story: Flujo FAQ Recurrente (Respuesta SI -> inform)
+  steps:
+    - intent: affirm
+    - action: action_listen
+    - intent: inform
+    - action: action_search_faq
+    - action: utter_ask_another_consultation
+    - action: action_listen
+
+# Respuesta afirmativa y solicitud de turno: no activar formulario dentro del loop
+- story: Flujo FAQ Recurrente (Respuesta SI -> Turno Custom)
+  steps:
+    - intent: affirm
+    - action: action_listen
+    - intent: inform
+    - action: utter_turno_action_panel
+    - action: utter_ask_another_consultation
+    - action: action_listen
+
+# Finalizar sesión
+- story: Finalizar sesion con Goodbye/Gracias o Deny
+  steps:
+    - intent: goodbye
+    - action: utter_goodbye
+  
+- story: Finalizar sesion con Deny
+  steps:
+    - intent: deny
+    - action: utter_goodbye
