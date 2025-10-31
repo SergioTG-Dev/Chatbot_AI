@@ -3,10 +3,10 @@ import { createClient } from "@/lib/supabase/server"
 
 export async function GET(
   req: Request,
-  { params }: { params: { dni: string } }
+  { params }: { params: Promise<{ dni: string }> }
 ) {
   try {
-    const { dni } = params
+    const { dni } = await params
 
     // Buscar ciudadano
     const supabase = await createClient()

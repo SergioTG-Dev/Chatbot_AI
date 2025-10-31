@@ -2,9 +2,9 @@ import json
 from fastapi import APIRouter, Depends, HTTPException, WebSocket, WebSocketDisconnect
 from typing import List
 from uuid import UUID
-from db.supabase_client import supabase
-from core.redis import redis_client
-from schemas.chat import Message, MessageCreate
+from ..db.supabase_client import supabase
+from ..core.redis import redis_client
+from ..schemas.chat import Message, MessageCreate
 
 router = APIRouter(prefix="/chat", tags=["Chat"])
 

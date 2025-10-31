@@ -1,9 +1,9 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, HTTPException, status
 from typing import List
 from uuid import UUID
-from db.supabase_client import supabase
-from schemas.department import Department, DepartmentCreate, DepartmentUpdate
-from schemas.procedure import Procedure
+from ..db.supabase_client import supabase
+from ..schemas.department import Department, DepartmentCreate, DepartmentUpdate
+from ..schemas.procedure import Procedure
 
 router = APIRouter(prefix="/departments", tags=["Departments"])
 
@@ -28,6 +28,9 @@ def read_departments(
     """
     Obtiene la lista de todos los departamentos.
     """
+    if supabase is None:
+        # Supabase es obligatorio: devolver error claro si falta configuración
+        raise HTTPException(status_code=500, detail="Supabase no está configurado (faltan SUPABASE_URL/SUPABASE_SERVICE_ROLE_KEY)")
     response = supabase.table("departments").select("*").range(skip, skip + limit - 1).execute()
     return response.data
 
@@ -46,6 +49,9 @@ def get_department_procedures(department_id: UUID):
     """
     Obtiene la lista de trámites (procedimientos) que ofrece un departamento específico.
     """
+    if supabase is None:
+        # Supabase es obligatorio: devolver error claro si falta configuración
+        raise HTTPException(status_code=500, detail="Supabase no está configurado (faltan SUPABASE_URL/SUPABASE_SERVICE_ROLE_KEY)")
     response = supabase.table("procedures").select("*").eq("department_id", department_id).execute()
     if not response.data:
         # No es un error 404, simplemente el departamento no tiene procedimientos

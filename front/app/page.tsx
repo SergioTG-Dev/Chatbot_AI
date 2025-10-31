@@ -1,12 +1,11 @@
 import { EnvVarWarning } from "@/components/env-var-warning";
 import { AuthButton } from "@/components/auth-button";
-import { ThemeSwitcher } from "@/components/theme-switcher";
+// ThemeSwitcher ahora se renderiza junto al Logout en la barra superior
 import { hasEnvVars } from "@/lib/utils";
 import Image from "next/image";
+import { Suspense } from "react";
 import Search from "@/components/ui/search";
 import Floating_button from "@/components/ui/floating_button";
-
-const monserrat = { className: 'font-extrabold' }; 
 
 export default function Home() {
   return (
@@ -34,34 +33,31 @@ export default function Home() {
             fill={true}
             className='hidden md:block absolute inset-0 object-cover' 
           />
-          <div className="relative z-10 text-white text-center w-full max-w-2xl px-4">
-        <h1 className="text-6xl font-extrabold mb-4 md:text-8xl md:mb-6">
-            Buenos Aires
+          {/* Superposición para mejorar contraste del texto sobre la imagen */}
+          <div className='hidden md:block absolute inset-0 bg-black/40' aria-hidden='true'></div>
+          <div className="relative z-10 text-white text-center w-full max-w-2xl px-4 md:bg-black/30 md:backdrop-blur-sm md:rounded-xl md:p-6 md:shadow-lg">
+        <h1 className="text-1xl font-extrabold mb-4 md:text-3xl md:mb-6 drop-shadow-xl">
+            Bienvenidos al portal de Buenos Aires
         </h1>
-        
-        <p className="text-xl mb-8 md:text-2xl md:mb-10">
-            ¡a un clic y al toque!
+
+        <p className="text-2xl mb-2 md:text-2xl md:mb-3 drop-shadow-md">
+            Habla con CiviBot para gestionar trámites, pedir turnos, consultar información y reportar emergencias.
+        </p>
+        <p className="text-sm mb-8 md:text-base md:mb-10 opacity-90 drop-shadow-md">
+            Tu asistente virtual municipal disponible 24/7.
         </p>
 
         <div className="flex justify-center">
-            <Search placeholder="Buscar Trámites y Servicios..." />
+            <Suspense fallback={<div className="text-white/90">Cargando búsqueda...</div>}>
+              <Search placeholder="Buscar Trámites y Servicios..." />
+            </Suspense>
         </div>
     </div>
           </div>
 
         <footer className="w-full flex justify-between items-center text-center text-xs border-t mx-auto px-5 py-8">
-          <p>
-            Powered by{" "}
-            <a
-              href="https://supabase.com/?utm_source=create-next-app&utm_medium=template&utm_term=nextjs"
-              target="_blank"
-              className="font-bold hover:underline"
-              rel="noreferrer"
-            >
-              Supabase
-            </a>
-          </p>
-          <ThemeSwitcher />
+          {/* Footer de producción sin branding externo */}
+          {/* ThemeSwitcher movido a la barra superior */}
         </footer>
         <Floating_button />
     </main>
