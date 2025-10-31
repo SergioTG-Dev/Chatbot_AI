@@ -54,9 +54,7 @@ export default function Floating_button() {
             className='p-1.5'
           />
         </button>
-
-        
-
+  
       </div>
     </>
   );
