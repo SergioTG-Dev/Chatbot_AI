@@ -168,17 +168,29 @@ export function useRasaChat({ roomName, username }: RasaChatProps) {
         const baseTimeoutMs = (content.startsWith('/greet') || content.startsWith('/faq_gcba')) ? 25000 : 15000
 
         const doFetch = async (ms: number) => {
-          const controller = new AbortController()
-          const timeoutId = setTimeout(() => controller.abort(), ms)
+          // Prefer AbortSignal.timeout when available to set a clear timeout reason
+          // Fallback to AbortController with an explicit reason to avoid
+          // "signal is aborted without reason" console noise.
+          let signal: AbortSignal
+          let timeoutId: ReturnType<typeof setTimeout> | null = null
+
+          if (typeof AbortSignal !== 'undefined' && typeof (AbortSignal as any).timeout === 'function') {
+            signal = (AbortSignal as any).timeout(ms)
+          } else {
+            const controller = new AbortController()
+            timeoutId = setTimeout(() => controller.abort('timeout'), ms)
+            signal = controller.signal
+          }
+
           try {
             return await fetch(RASA_API_URL, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify(requestBody),
-              signal: controller.signal,
+              signal,
             })
           } finally {
-            clearTimeout(timeoutId)
+            if (timeoutId) clearTimeout(timeoutId)
           }
         }
 
@@ -240,10 +252,16 @@ export function useRasaChat({ roomName, username }: RasaChatProps) {
           }
         }
 
-      } catch (error) {
-        console.error('Error al comunicarse con Rasa:', error)
+      } catch (error: any) {
+        // Evitar ruido en consola para abortos intencionales por timeout
+        if (error?.name !== 'AbortError') {
+          console.error('Error al comunicarse con Rasa:', error)
+        }
         const nowIso = new Date().toISOString()
-        const errorContent = "Error: No se pudo conectar con CiviBot."
+        const isTimeout = error?.name === 'AbortError' || error?.message?.toLowerCase()?.includes('timeout')
+        const errorContent = isTimeout
+          ? 'La solicitud tardó demasiado. Intentá nuevamente.'
+          : "Error: No se pudo conectar con CiviBot."
         const errorMessage: ChatMessage = {
           id: crypto.randomUUID(),
           content: errorContent,

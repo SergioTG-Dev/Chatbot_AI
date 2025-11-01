@@ -1,0 +1,25 @@
+FROM rasa/rasa-sdk:3.6.2
+
+# Cambiar a usuario root para instalar dependencias
+USER root
+
+WORKDIR /app
+
+# Copiar código fuente
+COPY src/rasa-chat/actions ./actions
+
+# Instalar dependencias adicionales necesarias
+RUN pip install --no-cache-dir python-dotenv requests
+
+# Cambiar de vuelta al usuario rasa
+USER 1001
+
+# Variables de entorno
+ENV FASTAPI_URL=https://civibot-2.onrender.com
+
+# Exponer puerto
+EXPOSE 5055
+
+# Usar PORT de Railway si está definido (por defecto 5055)
+SHELL ["/bin/sh", "-c"]
+CMD python -m rasa_sdk --actions actions --port 5055 --host 0.0.0.0

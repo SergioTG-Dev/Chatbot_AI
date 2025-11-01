@@ -28,7 +28,11 @@ rasa run actions --port 5055
 3. Run Rasa server (in another shell):
 
 ```powershell
+# Usar el último modelo de la carpeta models
 rasa run -m models --enable-api --cors "*" --debug
+
+# O especificar un modelo concreto
+rasa run -m models/20251030-232344-nullary-shot.tar.gz --enable-api --cors "*" --debug
 ```
 
 Notes for Docker/Compose

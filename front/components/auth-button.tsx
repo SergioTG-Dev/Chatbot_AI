@@ -36,7 +36,7 @@ export async function AuthButton() {
     return (
       <div className="flex items-center gap-4">
         <Button asChild size="sm" variant="secondary">
-        <Link href="/admin/dashboard">Ir al panel</Link>
+        <Link href="/admin">Ir al panel</Link>
         </Button>
         <div className="flex items-center gap-2">
           <LogoutButton />
@@ -50,7 +50,7 @@ export async function AuthButton() {
     return (
       <div className="flex items-center gap-4">
         <Button asChild size="sm" variant="secondary">
-          <Link href="/admin/dashboard">Ir a mi panel</Link>
+          <Link href="/admin">Ir a mi panel</Link>
         </Button>
         <div className="flex items-center gap-2">
           <LogoutButton />

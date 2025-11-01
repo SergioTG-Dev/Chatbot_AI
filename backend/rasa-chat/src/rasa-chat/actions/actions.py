@@ -10,6 +10,7 @@ import re
 import json
 import time
 from datetime import datetime
+from . import ACTION_INVOCATIONS, ACTION_DURATION
 
 faqs_database = []
 
@@ -28,7 +29,7 @@ class ActionSubmitAppointmentForm(Action):
     def run(self, dispatcher: CollectingDispatcher,
             tracker: Tracker,
             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
-        
+        t0 = time.time()
         cita_fecha = tracker.get_slot('date')
         
         # Aquí iría el código para llamar a una API/DB para crear la cita.
@@ -37,9 +38,13 @@ class ActionSubmitAppointmentForm(Action):
         
         if success:
             print(f"DEBUG: Cita creada con éxito para {cita_fecha}.")
+            ACTION_INVOCATIONS.labels(action_name=self.name()).inc()
+            ACTION_DURATION.labels(action_name=self.name()).observe(time.time() - t0)
             return [SlotSet("action_result", "success")] 
         else:
             print("DEBUG: Falla al crear la cita. Razón: [Simulación].")
+            ACTION_INVOCATIONS.labels(action_name=self.name()).inc()
+            ACTION_DURATION.labels(action_name=self.name()).observe(time.time() - t0)
             return [SlotSet("action_result", "failure")]
 
 
@@ -108,10 +113,12 @@ class ActionDefaultFallback(Action):
     def run(self, dispatcher: CollectingDispatcher,
             tracker: Tracker,
             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
-
+        t0 = time.time()
         # El bot indica que no entendió y ofrece opciones
         # dispatcher.utter_message(response="utter_ask_rephrase")
         # Evita repetir mensajes genéricos: sólo una instrucción y escucha
+        ACTION_INVOCATIONS.labels(action_name=self.name()).inc()
+        ACTION_DURATION.labels(action_name=self.name()).observe(time.time() - t0)
         return [SlotSet("action_result", None), FollowupAction("action_listen")]
 
 class ActionDetectAppointmentRequest(Action):
@@ -208,6 +215,9 @@ class ActionSearchFAQ(Action):
                     dispatcher.utter_message(response="utter_show_frequent_procedures")
                 except Exception:
                     pass
+                # Métricas de ejecución de la acción
+                ACTION_INVOCATIONS.labels(action_name=self.name()).inc()
+                ACTION_DURATION.labels(action_name=self.name()).observe(time.time() - t_start)
                 return [SlotSet("process_category", None)]
         except Exception:
             pass
@@ -303,13 +313,12 @@ class ActionSearchFAQ(Action):
                         )
                     except Exception as me:
                         print(f"WARN metric ActionSearchFAQ: {me}")
-        #         else:
-        #             dispatcher.utter_message(response="utter_faq_not_found")
-        #     else:
-        #         dispatcher.utter_message(response="utter_faq_not_found")
-        # except Exception as e:
-        #     print(f"ERROR FAQs FastAPI: {e}")
-        #     dispatcher.utter_message(response="utter_faq_not_found")
+        except Exception as e:
+            # Manejo de errores en la consulta a FastAPI
+            try:
+                print(f"ERROR FAQs FastAPI: {e}")
+            except Exception:
+                pass
 
         return [SlotSet("process_category", None)]
 
