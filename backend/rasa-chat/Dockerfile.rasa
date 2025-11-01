@@ -1,0 +1,21 @@
+FROM rasa/rasa:3.3.0-full
+
+WORKDIR /app
+
+# Copiar archivos de configuración y modelos
+COPY src/rasa-chat/config.yml ./
+COPY src/rasa-chat/domain.yml ./
+COPY src/rasa-chat/endpoints.yml ./
+COPY src/rasa-chat/credentials.yml ./
+COPY models/ ./models/
+
+# Variables de entorno
+ENV ACTION_ENDPOINT_URL=https://civibot-rasa-production.up.railway.app/webhook
+ENV FASTAPI_URL=https://civibot-2.onrender.com
+
+# Exponer puerto
+EXPOSE 5005
+
+# Comando por defecto - usar el último modelo disponible y respetar PORT
+SHELL ["/bin/sh", "-c"]
+CMD rasa run -m "models/20251030-232344-nullary-shot.tar.gz" --enable-api --cors "*" --host 0.0.0.0 --port ${PORT:-5005}

@@ -6,10 +6,4 @@ action_endpoint:
   # Rasa will substitute environment variables in this file. Set ACTION_ENDPOINT_URL
   # in your environment or compose file, e.g.:
   # ACTION_ENDPOINT_URL=http://action-server:5055/webhook
-  url: "http://localhost:5055/webhook"
-
-# Prometheus metrics configuration
-# Enable Rasa server metrics at port 9090 to integrate with Prometheus.
-metrics:
-  enabled: true
-  port: 9090
+  url: "https://civibot-rasa-production.up.railway.app/webhook"
