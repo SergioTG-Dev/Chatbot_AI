@@ -3,7 +3,7 @@
 ### `http://action-server:5055/webhook`). For local development you can set
 ### the environment variable ACTION_ENDPOINT_URL to override this value.
 action_endpoint:
-  # Rasa will substitute environment variables in this file. Set ACTION_ENDPOINT_URL
-  # in your environment or compose file, e.g.:
+  # Rasa puede sustituir variables de entorno en este archivo.
+  # Define ACTION_ENDPOINT_URL en tu entorno (Railway) o compose, por ejemplo:
   # ACTION_ENDPOINT_URL=http://action-server:5055/webhook
-  url: "https://civibot-rasa-production.up.railway.app/webhook"
+  url: ${ACTION_ENDPOINT_URL}
