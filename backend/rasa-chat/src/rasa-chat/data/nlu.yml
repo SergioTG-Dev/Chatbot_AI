@@ -1,19 +1,6 @@
 version: "3.1"
 
 nlu:
-- intent: consultar_lista_pokemon
-  examples: |
-    - muéstrame todos los pokémon
-    - lista de pokémon
-    - quiénes son todos los pokémon
-    - quiero ver los pokémon disponibles
-
-- intent: consultar_pokemon_especifico
-  examples: |
-    - información de [pikachu](pokemon_name)
-    - detalles de [charizard](pokemon_name)
-    - dame datos de [bulbasaur](pokemon_name)
-    - cómo es [squirtle](pokemon_name)
 
 - intent: greet
   examples: |
@@ -45,7 +32,7 @@ nlu:
 
 - intent: affirm
   examples: |
-    - si
+    - sí
     - por supuesto
     - me encantaría
     - estoy de acuerdo
@@ -55,7 +42,7 @@ nlu:
   examples: |
     - estoy genial
     - bien
-    - increible
+    - increíble
     - excelente
     - perfecto
 
@@ -78,28 +65,48 @@ nlu:
 
 - intent: stop
   examples: |
-   - para
-   - detente
-   - espera
-   - un momento
+    - para
+    - detente
+    - espera
+    - un momento
 
-- intent: help
-  examples: |
-    - necesito ayuda
-    - no entiendo
-    - ¿cómo funcionas?
-    - ¿qué te puedo preguntar?
-
-- intent: request_contact_info
+- intent: request_contact
   examples: |
     - dame el número de teléfono
     - ¿a qué correo me puedo comunicar?
     - ¿a dónde tendría que llamar?
     - información de contacto
     - ¿a qué departamento debo contactar?
-    - ¿dónde puedo escribirles?
-    - ¿cuál es la dirección?
-    - ¿a dónde me puedo dirigir?
+
+## DNI
+- intent: provide_dni
+  examples: |
+    - mi dni es [12345678](dni)
+    - DNI [23456789](dni)
+    - es [34567890](dni)
+    - [45678901](dni)
+    - te paso mi documento [8765432](dni)
+    - documento [12.345.678](dni)
+
+- intent: modify
+  examples: |
+    - quiero modificar mis datos
+    - cambiar mi información
+    - editar mis datos
+    - no están correctos, quiero cambiarlos
+    - modificar correo
+    - actualizar nombre y apellido
+
+- regex: dni
+  examples: |
+    - \b\d{7,8}\b
+
+- regex: appointment_request
+  examples: |
+    - sacar (un )?turno
+    - reservar (un )?turno
+    - agendar (una )?cita
+    - pedir (una )?cita
 
 - intent: request_hours
   examples: |
@@ -108,6 +115,32 @@ nlu:
     - ¿a qué horas abren?
     - ¿a qué horas cierran?
 
+- intent: solicitar_tramite
+  examples: |
+    - quiero [sacar un turno](appointment_request)
+    - necesito un turno
+    - quiero solicitar un trámite
+    - necesito hacer un trámite
+    - quiero [pedir una cita](appointment_request)
+    - necesito agendar un turno
+    - quiero [reservar un turno](appointment_request)
+    - [solicitar turno](appointment_request)
+    - [pedir turno](appointment_request)
+    - [agendar cita](appointment_request)
+    - [reservar cita](appointment_request)
+    - hacer trámite
+    - solicitar trámite
+    - quiero un turno para un trámite
+    - necesito hacer un procedimiento
+    - quiero [agendar una cita](appointment_request)
+    - quiero [sacar una cita](appointment_request)
+    - necesito [reservar una cita](appointment_request)
+    - quiero un turno ya
+    - necesito [sacar turno](appointment_request)
+    - quisiera pedir un turno
+    - quisiera [agendar una cita](appointment_request)
+    - quiero programar una cita
+
 - intent: consult_appointment
   examples: |
     - quiero reservar una cita para el [próximo martes](date).
@@ -115,7 +148,7 @@ nlu:
     - me gustaría pedir una cita para [la próxima semana](date) a las [cuatro de la tarde](time).
     - ¿cómo saco un ticket para [trámites de documentos](process_category)?
     - ¿tienen disponibilidad para el [viernes](date)?
-    - quiero consultar una hora para el [pasaporte]](service_type).
+    - quiero consultar una hora para el [pasaporte](service_type).
 
 - intent: cancel_appointment
   examples: |
@@ -155,23 +188,109 @@ nlu:
     - tengo una pregunta general sobre trámites
     - me puedes decir algo del gobierno de la ciudad?
     - no conozco Buenos Aires, podrías hablarme de la ciudad
+    - [pasaporte](process_category)
+    - [dni](process_category)
+    - [licencia](process_category)
+    - [agip](process_category)
+    - [impuestos](process_category)
+    - [duplicado de licencia](process_category)
+    # Ejemplos de una sola palabra (mejoran clasificación como ask_faq)
+    - licencia
+    - licencias
+    - agip
+    - impuestos
+    - duplicado de dni
 
-- intent: nlu_fallback
+- intent: faq_gcba
   examples: |
-    - ¿qué comiste anoche?
-    - me gusta el color azul pero no el amarillo
-    - si el cielo es rojo, ¿cuántos peces hay?
-    - no sé qué decir ahora
-    - quiero un turno para comprar un coche
-    - ¿me puedes decir la capital de Francia?
-    - mi perro se llama Firulais
-    - ¿qué opinas de la política local?
-    - necesito sacar una cita con el dentista
-    - cuánto cuesta un boleto de avión
-    - ghjksd fvbnmlñ
-    - cuanto es 2 + 2
-    - hola necesito un turno para mi vuelo
-    - quiero hablar con un humano ahora mismo
+    - ¿Cómo saco el DNI por primera vez?
+    - ¿Cómo tramito el pasaporte?
+    - ¿Cómo renuevo mi licencia de conducir?
+    - ¿Dónde me puedo vacunar gratuitamente?
+    - ¿Cómo denuncio contaminación o problemas ambientales?
+    - ¿Cómo inscribo el nacimiento de mi hijo/a?
+    - ¿Qué necesito para habilitar un local comercial?
+    - ¿Cómo consulto y pago el impuesto inmobiliario (ABL)?
+    - dni
+    - pasaporte
+    - [partidas de nacimiento](process_category)
+    - [pasaporte](process_category)
+    - [dni](process_category)
+    - [partidas de nacimiento](process_category)
+    - [licencia](process_category)
+    - [agip](process_category)
+    - [duplicado de licencia](process_category)
+    - ¿Cómo cambio el domicilio en mi DNI?
+    - ¿Qué hago si perdí mi DNI?
+    - ¿Cómo obtengo mi primera licencia de conducir?
+    - ¿Cómo saco un duplicado de licencia por robo o extravío?
+    - ¿Cómo consulto los puntos de mi licencia?
+    - ¿Cómo consulto si tengo multas de tránsito?
+    - ¿Cómo hago un descargo por una multa?
+    - ¿Cómo tramito un permiso de demolición?
+    - ¿Cómo cambio el nombre y género en mi DNI?
+    - ¿Cómo rúbrico los libros laborales de mi empresa?
+    - ¿Dónde pedir ayuda por violencia de género?
+    - ¿Cómo uso el sistema de bicicletas públicas EcoBici?
+    - ¿Qué museos de la Ciudad son gratuitos?
+    - ¿Hay becas universitarias del Gobierno de la Ciudad?
+    - ¿Cómo obtengo la Clave Ciudad?
+    - ¿Cómo denuncio que vendí mi auto si me llegan multas?
+    - ¿Cómo saco turno en un Centro de Salud (CeSAC)?
+    - ¿Cómo tramito el Certificado de Discapacidad?
+    - ¿Cómo pago la patente del auto?
+    - ¿Cómo me inscribo en Ingresos Brutos?
+    - ¿Los jubilados tienen exención de ABL?
+    - ¿Cómo habilito un local comercial?
+    - ¿Cómo saber si puedo poner mi tipo de negocio en determinado lugar?
+    - ¿Qué necesito para habilitar un restaurante o bar?
+    - ¿Cómo tramito el Boleto Estudiantil?
+    - ¿Cómo inscribo a mi hijo/a en una escuela pública?
+    - ¿Qué es y cómo me inscribo en Ciudadanía Porteña?
+    - ¿Qué es el Programa Ticket Social?
+    - ¿Cómo accedo a un crédito del IVC para vivienda?
+    - ¿Cómo me caso en la Ciudad de Buenos Aires?
+    - ¿Qué es la Unión Civil Convivencial y cómo la tramito?
+    - ¿Cómo gestiono mi tarjeta SUBE?
+    - ¿Cómo funciona el estacionamiento medido en CABA?
+    - ¿Cómo obtengo la licencia para conducir taxi?
+    - ¿Cómo denuncio un problema con un taxi o remis?
+    - ¿Cómo me hago socio de las bibliotecas públicas?
+    - ¿Qué es Proteatro y cómo accedo?
+    - ¿Cómo registro mi propiedad para alquileres temporarios turísticos?
+    - ¿Cómo hago una denuncia por defensa del consumidor?
+    - ¿Cómo reporto un problema en la vía pública?
+    - ¿Quién es responsable de reparar las veredas?
+    - ¿Cómo funciona la separación de residuos en CABA?
+    - ¿Cómo tramito un permiso de obra?
+    - ¿Necesito permiso para hacer reformas en mi casa?
+    - ¿Qué trámites puedo hacer relacionados con cementerios?
+    - ¿Cómo busco trabajo con ayuda del Gobierno de la Ciudad?
+    - ¿Cómo me inscribo para vender en ferias de la Ciudad?
+    - ¿Debo registrar a mi perro potencialmente peligroso?
+    - ¿Cómo solicito información pública al Gobierno de la Ciudad?
+    - ¿Cómo solicito permiso para realizar un evento en la Ciudad?
+    - ¿Qué beneficios hay para adultos mayores en CABA?
+    - ¿Cómo solicito un espacio de estacionamiento reservado?
+    - ¿Cómo tramito una autorización de viaje para menores?
+    - ¿Cómo agrego una categoría a mi licencia de conducir?
+    - ¿Cómo obtengo un certificado de domicilio?
+    - ¿Puedo pagar impuestos atrasados en cuotas?
+    - ¿Cómo doy de baja mi habilitación comercial?
+- intent: report_emergency
+  examples: |
+    - quiero reportar una emergencia
+    - hay un incendio en mi edificio
+    - necesito ambulancia urgente
+    - hay una persona herida
+    - robo en progreso, necesito ayuda
+    - emergencia médica
+    - llamar a bomberos
+    - llamar a la policía
+    - hay una fuga de gas
+    - necesito asistencia inmediata
+
+
 
 - intent: inform
   examples: |
@@ -179,12 +298,11 @@ nlu:
     - El [próximo viernes](date)
     - Quiero la [cita de pasaporte](service_type)
     - Mi número de ID es [456ABC](appointment_id)
-    - El turno era para [Salud](process_category)
     - La tengo [a las 15:30](time)
     - Para la [mañana](time)    
-    - Sí, esa es mi [cita](service_type)
+    # Evitar palabras 'turno'/'cita' aquí para no sesgar el intent
     - Creo que [es un trámite](process_category)
-    - Sobre [licencia de conducir](service_type)
+    # Eliminado ejemplo que sesgaba 'licencia' a inform
     - No, no es el [martes](date), es el [miércoles](date)
     - La hora es [las 10](time), no [las 11](time)
     - La quiero para [hoy](date), no para [mañana](date) 
@@ -196,6 +314,7 @@ entity_synonyms:
     - dni
     - cedula
     - partida nacimiento
+    - partidas de nacimiento
     - recien nacido
     - pasaporte
     - viaje
@@ -227,6 +346,7 @@ entity_synonyms:
     - conducir
     - puntos licencia
     - duplicado licencia
+    - duplicado de licencia
     
   "Infracciones de Tránsito":
     - multas
@@ -247,13 +367,9 @@ entity_synonyms:
     - actividad económica
     - pago de deuda
     - clave ciudad 
-    
-  "Habilitaciones Comerciales":
-    - habilitacion
-    - comercio
-    - gastronomía
+
+# Eliminado bloque de lookup mal formateado. Consolidar en la sección final.
     - rubros permitidos
-    - código urbanistico
     - abrir negocio
     - permisos
     - negocio
@@ -401,3 +517,40 @@ entity_synonyms:
   "Autorizaciones Especiales":
     - permiso viaje
     - viajar con menores
+
+lookup:
+  - name: process_category
+    examples: |
+      - Registro Civil y DNI
+      - Licencias de Conducir
+      - Infracciones de Tránsito
+      - Impuestos y AGIP
+      - Habilitaciones Comerciales
+      - Educación
+      - Desarrollo social
+      - Matrimonio y Unión civil
+      - Transporte
+      - Taxis y Remises
+      - Cultura
+      - Turismo
+      - Defensa al consumidor
+      - Espacios públicos
+      - Medio ambiente
+      - Obras y Construcción
+      - Cementerios
+      - Empleo
+      - Ferias y Mercados
+      - Mascotas
+      - Información Pública
+      - Eventos
+      - Adultos Mayores
+      - Estacionamiento reservado
+      - Autorizaciones Especiales
+      - pasaporte
+      - dni
+      - partidas de nacimiento
+      - licencia
+      - renovación de licencia
+      - duplicado de licencia
+      - agip
+      - impuestos

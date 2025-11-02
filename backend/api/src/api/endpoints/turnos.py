@@ -3,9 +3,9 @@ from fastapi import APIRouter, HTTPException, status, Query
 from typing import List
 from uuid import UUID
 from datetime import datetime
-from db.supabase_client import supabase
-from schemas.turno import Turno, TurnoCreate
-from endpoints.tickets import get_citizen_by_dni
+from ..db.supabase_client import supabase
+from ..schemas.turno import Turno, TurnoCreate, TurnoUpdate
+from .tickets import get_citizen_by_dni
 
 router = APIRouter(prefix="/turnos", tags=["Turnos"])
 
@@ -18,13 +18,21 @@ def create_turno(turno: TurnoCreate):
     if not procedure.data:
         raise HTTPException(status_code=404, detail="Procedure not found")
 
-    turno_data = turno.model_dump(exclude={"citizen_dni"})
-    turno_data["citizen_id"] = citizen.id
+    # Serializar a JSON para evitar problemas con UUID/datetime
+    turno_data = turno.model_dump(mode="json", exclude={"citizen_dni"})
+    # `get_citizen_by_dni` devuelve un dict; acceder por clave
+    turno_data["citizen_id"] = citizen["id"]
+    # Asegurar estado por defecto si la BD no retorna default
+    if "status" not in turno_data or not turno_data["status"]:
+        turno_data["status"] = "programado"
     
     response = supabase.table("turnos").insert(turno_data).execute()
     if not response.data:
         raise HTTPException(status_code=400, detail="Error creating turno")
-    return response.data[0]
+    inserted_id = response.data[0]["id"]
+    # Leer la fila completa para asegurar defaults (como status)
+    final = supabase.table("turnos").select("*").eq("id", inserted_id).execute()
+    return final.data[0]
 
 @router.get("/", response_model=List[Turno])
 def read_turnos(skip: int = 0, limit: int = 100):
@@ -85,3 +93,26 @@ def cancel_turno(turno_id: UUID):
     
     response = supabase.table("turnos").update({"status": "cancelado"}).eq("id", turno_id).execute()
     return response.data[0]
+
+@router.put("/{turno_id}", response_model=Turno)
+def update_turno(turno_id: UUID, turno_update: TurnoUpdate):
+    db_turno = supabase.table("turnos").select("*").eq("id", turno_id).execute()
+    if not db_turno.data:
+        raise HTTPException(status_code=404, detail="Turno not found")
+
+    # Solo actualiza los campos proporcionados
+    update_data = turno_update.model_dump(exclude_unset=True)
+    if not update_data:
+        return db_turno.data[0]
+
+    response = supabase.table("turnos").update(update_data).eq("id", turno_id).execute()
+    return response.data[0]
+
+@router.delete("/{turno_id}")
+def delete_turno(turno_id: UUID):
+    db_turno = supabase.table("turnos").select("*").eq("id", turno_id).execute()
+    if not db_turno.data:
+        raise HTTPException(status_code=404, detail="Turno not found")
+
+    supabase.table("turnos").delete().eq("id", turno_id).execute()
+    return {"message": "Turno deleted successfully"}

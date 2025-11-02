@@ -26,13 +26,69 @@ rules:
     steps:
       - active_loop: null
       - intent: nlu_fallback
-      - action: action_default_fallback
+      - action: action_detect_appointment_request
+      - slot_was_set:
+        - appointment_request
+      - action: appointment_full_form
+      - active_loop: appointment_full_form
 
-  - rule: Responder preguntas frecuentes (FAQ)
+  # - rule: Fallback sin keywords
+  #   steps:
+  #     - intent: nlu_fallback
+  #     - action: action_default_fallback
+
+  # - rule: Responder preguntas frecuentes (FAQ)
+  #   steps:
+  #     - intent: ask_faq
+  #     - action: action_respond_faq
+  #     - action: action_listen
+
+  # Reglas deterministas para FAQs fuera de formularios
+  - rule: Responder preguntas frecuentes
+    condition:
+    - active_loop: null
+    steps:
+    - intent: ask_faq
+    - action: action_search_faq
+    - action: utter_ask_another_consultation
+    - action: action_listen
+
+  - rule: Responder FAQs GCBA por categoría
+    condition:
+    - active_loop: null
+    steps:
+    - intent: faq_gcba
+    - action: action_search_faq
+    - action: utter_ask_another_consultation
+    - action: action_listen
+      
+
+
+  - rule: Interrupción del Formulario por FAQ
+    condition:
+      - active_loop: appointment_full_form
     steps:
       - intent: ask_faq
       - action: action_search_faq
-      - action: action_listen
+      - action: appointment_full_form
+
+  - rule: Modificar datos tras confirmación
+    condition:
+      - active_loop: appointment_full_form
+    steps:
+      - intent: modify
+      - action: action_start_registration
+      - action: appointment_full_form
+
+  - rule: No confirmar datos encontrados
+    condition:
+      - active_loop: appointment_full_form
+    steps:
+      - intent: deny
+      - action: action_start_registration
+      - action: appointment_full_form
+
+  # Eliminado: regla específica de 'Listar trámites disponibles' para evitar contradicciones con historias
 
   - rule: Responder a la petición de ayuda
     steps:
@@ -45,6 +101,34 @@ rules:
       - intent: request_contact_info
       - action: utter_contact_info
 
+  - rule: Responder a reporte de emergencia
+    steps:
+      - intent: report_emergency
+      - action: action_report_emergency
+      - action: utter_did_that_help
+
+  # Reglas deterministas para resultados de acciones
+  - rule: Post-procesamiento de reagendamiento exitoso
+    steps:
+      - slot_was_set:
+        - action_result: success
+      - action: utter_did_that_help
+
+  - rule: Post-procesamiento de reagendamiento fallido
+    steps:
+      - slot_was_set:
+        - action_result: failure
+      - action: utter_reschedule_failed
+      - action: utter_did_that_help
+
+  - rule: Post-procesamiento de booking exitoso
+    steps:
+      - slot_was_set:
+        - turno_id
+      - action: utter_ask_other_procedures
+
+  # (Regla eliminada) — el manejo de ask_faq se cubre con historias para evitar contradicciones
+
   - rule: Responder a la petición de horario
     steps:
       - intent: request_hours
@@ -52,40 +136,75 @@ rules:
 
   - rule: Detener el flujo o formulario actual
     condition:
-      - active_loop: appointment_form 
+      - active_loop: appointment_full_form
     steps:
       - intent: stop
       - action: action_deactivate_loop
-      - action: utter_ask_rephrase
+      # - action: utter_ask_rephrase
       - active_loop: null
 
   - rule: Interrupción del Formulario por info de Contacto
     condition:
-      - active_loop: appointment_form 
+      - active_loop: appointment_full_form
     steps:
       - intent: request_contact_info
       - action: utter_contact_info
-      - action: appointment_form
+      - action: appointment_full_form
       
   - rule: Interrupción del Formulario por Horario
     condition:
-      - active_loop: appointment_form 
+      - active_loop: appointment_full_form
     steps:
       - intent: request_hours
       - action: utter_hours
-      - action: appointment_form
+      - action: appointment_full_form
 
-  - rule: Activar lista de Pokémon
-    steps:
-      - intent: consultar_lista_pokemon
-      - action: action_get_all_pokemon
+  # - rule: Consulta FAQ con categoría fuera de formulario
+  #   condition:
+  #     - active_loop: null
+  #   steps:
+  #     - intent: ask_faq
+  #     - slot_was_set:
+  #       - process_category
+  #     - action: action_search_faq
+  #     - action: action_listen
 
-  - rule: Activar detalles de un Pokémon
+  - rule: Activar formulario de turnos
     steps:
-      - intent: consultar_pokemon_especifico
-      - action: action_get_pokemon_detail
+      - intent: solicitar_tramite
+      - action: appointment_full_form
+      - active_loop: appointment_full_form
 
-  - rule: Pedir Pokémon si no se menciona
+  - rule: Activar formulario por keywords de turno/cita incluso con fallback
+    condition:
+      - active_loop: null
     steps:
-      - intent: consultar_pokemon_especifico
-      - action: utter_pedir_pokemon
+      - intent: nlu_fallback
+      - slot_was_set:
+        - appointment_request
+      - action: appointment_full_form
+      - active_loop: appointment_full_form
+
+  - rule: Activar formulario por keywords en intent inform
+    condition:
+      - active_loop: null
+    steps:
+      - intent: inform
+      - slot_was_set:
+        - appointment_request
+      - action: appointment_full_form
+      - active_loop: appointment_full_form
+
+  # Regla de envío automático de booking eliminada para evitar conflictos con historias.
+
+
+  # Regla fuerte: cualquier 'inform' fuera de formulario cae a FAQ
+  - rule: Derivar 'inform' con categoría a búsqueda FAQ fuera de formulario
+    condition:
+      - active_loop: null
+    steps:
+      - intent: inform
+      - slot_was_set:
+        - process_category
+      - action: action_search_faq
+      - action: action_listen

@@ -1,0 +1,42 @@
+version: '3.8'
+services:
+  backend-api:
+    # Example: build the backend API from the repo
+    build:
+      context: ../api
+      dockerfile: Dockerfile
+    container_name: backend-api
+    environment:
+      - PORT=8000
+    ports:
+      - "8000:8000"
+
+  action-server:
+    # Actions run the custom actions module
+    image: rasa/rasa-sdk:3.3.0
+    container_name: rasa-action-server
+    volumes:
+      - ./src/rasa-chat:/app/actions:ro
+    environment:
+      - FASTAPI_URL=https://civibot-2.onrender.com
+    ports:
+      - "5055:5055"
+
+  rasa:
+    image: rasa/rasa:3.3.0-full
+    container_name: rasa
+    command: ["run", "-m", "models/20251030-232344-nullary-shot.tar.gz", "--enable-api", "--cors", "*"]
+    environment:
+      - ACTION_ENDPOINT_URL=http://127.0.0.1:5055
+      - FASTAPI_URL=https://civibot-2.onrender.com
+    ports:
+      - "5005:5005"
+    depends_on:
+      - action-server
+      - backend-api
+# Notes:
+# - This is an example composition to run Rasa, the action server and the
+#   backend API together for local integration testing. It assumes you have
+#   Dockerfiles for the backend API under backend/api/.
+# - Set `FASTAPI_URL` and `ACTION_ENDPOINT_URL` appropriately for your
+#   environment. Supabase is an external service and is not included here.

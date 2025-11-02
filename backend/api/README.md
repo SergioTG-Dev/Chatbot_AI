@@ -37,11 +37,20 @@ API RESTful para la gestión de tickets, turnos y un sistema de chat en tiempo r
     - Completa los valores de `SUPABASE_URL`, `SUPABASE_KEY`, `REDIS_URL` y `SECRET_KEY`.
 
 4.  **Configura la Base de Datos en Supabase:**
-    - Ejecuta el script SQL proporcionado en la documentación del proyecto en el editor SQL de tu proyecto Supabase para crear las tablas necesarias.
+    - Abre el editor SQL de tu proyecto Supabase y ejecuta el archivo `backend/api/codigo.sql` para crear las tablas necesarias (incluida `faqs_gcba`).
 
 ### 3. Poblar la Base de Datos
 
-Para llenar la base de datos con datos de prueba, ejecuta el seeder:
+Para llenar la base de datos:
 
-```bash
-poetry run python -m app.utils.seeder
+- Datos de prueba (ciudadanos, tickets, turnos, etc.):
+  ```bash
+  poetry run python src/api/seed_data.py
+  ```
+
+- Base de conocimiento de Preguntas Frecuentes (FAQs):
+  ```bash
+  poetry run python src/api/seed_faqs.py
+  ```
+
+Si la tabla `faqs_gcba` no existe, asegúrate de ejecutar `backend/api/codigo.sql` primero.

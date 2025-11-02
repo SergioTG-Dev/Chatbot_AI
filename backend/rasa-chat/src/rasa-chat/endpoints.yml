@@ -1,2 +1,9 @@
+### Action endpoint configuration
+### In Docker deployments use the action server service name (for example
+### `http://action-server:5055/webhook`). For local development you can set
+### the environment variable ACTION_ENDPOINT_URL to override this value.
 action_endpoint:
-  url: "http://localhost:5055/webhook"
+  # Rasa puede sustituir variables de entorno en este archivo.
+  # Define ACTION_ENDPOINT_URL en tu entorno (Railway) o compose, por ejemplo:
+  # ACTION_ENDPOINT_URL=http://action-server:5055/webhook
+  url: ${ACTION_ENDPOINT_URL}

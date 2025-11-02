@@ -1,7 +1,15 @@
 import { updateSession } from "@/lib/supabase/middleware";
-import { type NextRequest } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 
 export async function middleware(request: NextRequest) {
+  // Allow unauthenticated access to frontend proxy for departments
+  if (request.nextUrl.pathname.startsWith("/api/departments")) {
+    return NextResponse.next();
+  }
+  // Allow unauthenticated access to frontend proxy for procedures
+  if (request.nextUrl.pathname.startsWith("/api/procedures")) {
+    return NextResponse.next();
+  }
   return await updateSession(request);
 }
 

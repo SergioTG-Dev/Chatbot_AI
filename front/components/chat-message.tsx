@@ -27,6 +27,28 @@ export const ChatMessageItem = ({
   
   const isBotMessage = !isOwnMessage 
   
+  // Convierte URLs en enlaces clickeables manteniendo el resto como texto
+  const renderWithLinks = (text: string) => {
+    const urlRegex = /(https?:\/\/[^\s]+)/g
+    const parts = text.split(urlRegex)
+    return parts.map((part, idx) => {
+      if (urlRegex.test(part)) {
+        return (
+          <a
+            key={`link-${idx}`}
+            href={part}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline hover:opacity-90"
+          >
+            {part}
+          </a>
+        )
+      }
+      return <span key={`text-${idx}`}>{part}</span>
+    })
+  }
+  
   return (
     <div className={`flex mt-2 ${isOwnMessage ? 'justify-end' : 'justify-start'}`}>
       <div
@@ -53,11 +75,11 @@ export const ChatMessageItem = ({
         
         <div
           className={cn(
-            'py-2 px-3 rounded-xl text-sm w-fit',
+            'py-2 px-3 rounded-xl text-sm w-fit whitespace-pre-wrap break-words',
             isOwnMessage ? 'bg-primary text-primary-foreground' : 'bg-muted text-foreground'
           )}
         >
-          {message.content}
+          {renderWithLinks(message.content)}
         </div>
         
         {message.buttons && message.buttons.length > 0 && isBotMessage && (

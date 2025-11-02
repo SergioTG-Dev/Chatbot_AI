@@ -5,12 +5,14 @@ from datetime import datetime
 
 class DepartmentBase(BaseModel):
     name: str
+    address: Optional[str] = None
 
 class DepartmentCreate(DepartmentBase):
     pass
 
 class DepartmentUpdate(BaseModel):
     name: Optional[str] = None
+    address: Optional[str] = None
 
 class Department(DepartmentBase):
     id: UUID

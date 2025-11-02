@@ -5,9 +5,11 @@ from enum import Enum
 
 class TurnoStatus(str, Enum):
     abierto = "abierto"
+    programado = "programado"
     en_progreso = "en_progreso"
     resuelto = "resuelto"
     cerrado = "cerrado"
+    cancelado = "cancelado"
 
 class TurnoBase(BaseModel):
     procedure_id: UUID
@@ -15,6 +17,10 @@ class TurnoBase(BaseModel):
 
 class TurnoCreate(TurnoBase):
     citizen_dni: str
+
+class TurnoUpdate(BaseModel):
+    scheduled_at: datetime | None = None
+    status: TurnoStatus | None = None
 
 class Turno(TurnoBase):
     id: UUID

@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from typing import List
 from uuid import UUID
-from db.supabase_client import supabase
-from schemas.ticket import Ticket, TicketCreate, TicketUpdate
-from endpoints.citizens import read_citizen_by_dni
+from ..db.supabase_client import supabase
+from ..schemas.ticket import Ticket, TicketCreate, TicketUpdate
+from .citizens import read_citizen_by_dni
 
 router = APIRouter(prefix="/tickets", tags=["Tickets"])
 

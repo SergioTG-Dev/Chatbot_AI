@@ -105,3 +105,24 @@ CREATE INDEX IF NOT EXISTS idx_turnos_citizen_id ON public.turnos(citizen_id);
 CREATE INDEX IF NOT EXISTS idx_chat_messages_session_id ON public.chat_messages(session_id);
 CREATE INDEX IF NOT EXISTS idx_citizens_dni ON public.citizens(dni);
 CREATE INDEX IF NOT EXISTS idx_officials_department_id ON public.officials(department_id);
+
+-- ============================================
+-- Tabla de FAQs GCBA
+-- Conocimiento base para preguntas frecuentes del chatbot.
+-- ============================================
+CREATE TABLE IF NOT EXISTS public.faqs_gcba (
+    id SERIAL PRIMARY KEY,
+    categoria TEXT NOT NULL,
+    subcategoria TEXT,
+    pregunta TEXT NOT NULL,
+    respuesta TEXT NOT NULL,
+    keywords TEXT[] DEFAULT '{}',
+    url_referencia TEXT,
+    tags TEXT[] DEFAULT '{}',
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Índices recomendados para búsquedas por categoría/subcategoría y por palabras clave
+CREATE INDEX IF NOT EXISTS idx_faqs_categoria ON public.faqs_gcba(categoria);
+CREATE INDEX IF NOT EXISTS idx_faqs_subcategoria ON public.faqs_gcba(subcategoria);
+CREATE INDEX IF NOT EXISTS idx_faqs_keywords ON public.faqs_gcba USING GIN (keywords);
